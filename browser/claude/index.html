@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PALMERA HEAT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;user-select:none}
+html,body{width:100%;height:100%;overflow:hidden;background:#06121c;font-family:"Segoe UI",Roboto,Arial,sans-serif;color:#fff}
+canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hide{display:none!important}
+#hud{position:fixed;inset:0;pointer-events:none;text-shadow:0 2px 4px rgba(0,0,0,.85)}
+#miniwrap{position:absolute;left:26px;bottom:26px;width:232px}
+#mini{width:232px;height:164px;border-radius:14px;border:3px solid rgba(255,255,255,.85);box-shadow:0 6px 24px rgba(0,0,0,.6);background:#17405f;display:block}
+.bars{display:flex;gap:5px;margin-top:6px}
+.bar{height:11px;flex:1;background:rgba(0,0,0,.6);border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,.25)}
+.bar i{display:block;height:100%;width:100%}
+#hp{background:linear-gradient(#7dff8a,#22b455)}#ar{background:linear-gradient(#8fd3ff,#2a86e8)}
+#tr{position:absolute;right:28px;top:22px;text-align:right}
+#stars{font-size:34px;letter-spacing:3px;line-height:1;height:38px}
+#stars b{color:rgba(0,0,0,.45);-webkit-text-stroke:1.5px rgba(255,255,255,.55);font-weight:400}
+#stars b.on{color:#fff;-webkit-text-stroke:0;text-shadow:0 0 12px #6bd0ff,0 2px 3px #000}
+#stars.blink b.on{animation:bl .5s steps(2) infinite}@keyframes bl{50%{opacity:.25}}
+#money{font:italic 900 34px "Arial Black",Impact,sans-serif;color:#8dff9a;letter-spacing:1px;margin-top:4px}
+#clock{font:700 17px "Segoe UI";opacity:.9;margin-top:2px}
+#wbox{margin-top:8px;display:inline-flex;align-items:center;gap:10px;background:rgba(8,16,24,.55);border-radius:12px;padding:6px 14px;border:1px solid rgba(255,255,255,.18)}
+#wname{font:800 15px "Segoe UI";letter-spacing:2px;text-transform:uppercase}#ammo{font:900 22px "Arial Black";color:#ffe27a}
+#cross{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;opacity:.9}
+#cross:before,#cross:after{content:"";position:absolute;background:#fff;box-shadow:0 0 3px #000}
+#cross:before{left:12px;top:0;width:2px;height:26px;clip-path:polygon(0 0,100% 0,100% 35%,0 35%,0 65%,100% 65%,100% 100%,0 100%)}
+#cross:after{top:12px;left:0;height:2px;width:26px;clip-path:polygon(0 0,35% 0,35% 100%,0 100%,0 0,65% 0,100% 0,100% 100%,65% 100%,65% 0)}
+#cross.hit:before,#cross.hit:after{background:#ff5a4a}
+#obj{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);font:600 21px "Segoe UI";text-align:center;max-width:70%;background:rgba(6,12,18,.5);padding:8px 20px;border-radius:10px}
+#obj em{color:#ffd84a;font-style:normal;font-weight:800}
+#sub{position:absolute;left:50%;bottom:150px;transform:translateX(-50%);font:600 19px "Segoe UI";text-align:center;max-width:64%;color:#f4f4f4}
+#sub b{color:#6fe0ff}
+#prompt{position:absolute;left:26px;top:22px;font:600 16px "Segoe UI";background:rgba(6,12,18,.62);padding:9px 15px;border-radius:10px;border-left:4px solid #ffd84a;max-width:420px;line-height:1.45}
+#prompt kbd{background:#fff;color:#111;border-radius:4px;padding:1px 7px;font:800 13px "Segoe UI";text-shadow:none;margin:0 2px}
+#zone{position:absolute;right:30px;bottom:30px;text-align:right;font:italic 900 34px "Arial Black",Impact,sans-serif;opacity:0;transition:opacity .6s;letter-spacing:1px}
+#zone small{display:block;font:italic 700 20px "Segoe UI";color:#ffd84a}
+#banner{position:absolute;left:0;right:0;top:27%;text-align:center;opacity:0;transition:opacity .5s}
+#banner h1{font:italic 900 78px "Arial Black",Impact,sans-serif;letter-spacing:3px;background:linear-gradient(#fff36b,#ff9d2e);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 #000) drop-shadow(0 0 18px rgba(0,0,0,.7))}
+#banner h1.bad{background:linear-gradient(#ff8a7a,#c8102e);-webkit-background-clip:text}
+#banner h1.blue{background:linear-gradient(#bfe6ff,#2a86e8);-webkit-background-clip:text}
+#banner p{font:700 26px "Segoe UI";margin-top:6px}
+#radio{position:absolute;left:50%;top:26px;transform:translateX(-50%);text-align:center;opacity:0;transition:opacity .4s;background:rgba(6,12,18,.6);padding:8px 26px;border-radius:30px;border:1px solid rgba(255,255,255,.25)}
+#radio b{font:italic 900 22px "Arial Black";color:#6fe0ff}#radio span{display:block;font-size:13px;letter-spacing:3px;text-transform:uppercase;opacity:.8}
+#timer{position:absolute;left:50%;top:84px;transform:translateX(-50%);font:900 34px "Arial Black";color:#ffe27a}
+#speed{position:absolute;left:272px;bottom:28px;font:italic 900 40px "Arial Black";line-height:.9}#speed small{font:700 13px "Segoe UI";letter-spacing:2px;display:block;opacity:.8}
+#dmg{position:fixed;inset:0;pointer-events:none;box-shadow:inset 0 0 160px 40px rgba(220,0,0,.75);opacity:0}
+#fade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .6s}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;padding-left:8vw;background:linear-gradient(90deg,rgba(3,10,18,.88) 0%,rgba(3,10,18,.55) 42%,rgba(3,10,18,0) 75%)}
+.logo{font:italic 900 clamp(60px,9.5vw,138px) "Arial Black",Impact,sans-serif;line-height:.84;letter-spacing:-2px;transform:skew(-6deg) rotate(-3deg);transform-origin:left;margin-bottom:34px}
+.logo span{display:block;background:linear-gradient(180deg,#fffbd0 0%,#ffe04a 30%,#ff8a1f 62%,#e8322a 100%);-webkit-background-clip:text;color:transparent;filter:drop-shadow(4px 5px 0 #0b2a3c) drop-shadow(0 0 30px rgba(255,150,40,.35))}
+.logo span.l2{background:linear-gradient(180deg,#d8fff8 0%,#3fe0d0 45%,#0b88b8 100%);-webkit-background-clip:text;margin-left:.55em}
+.logo small{display:block;font:700 clamp(13px,1.5vw,20px) "Segoe UI";letter-spacing:.62em;color:#fff;margin:16px 0 0 10px;transform:skew(6deg);opacity:.9}
+.menu{list-style:none;width:min(430px,80vw)}
+.menu li{font:italic 800 30px "Segoe UI";padding:9px 20px;margin:5px 0;cursor:pointer;border-left:5px solid transparent;opacity:.78;transition:all .12s;text-shadow:0 2px 6px #000;display:flex;justify-content:space-between;align-items:center;pointer-events:auto}
+.menu li.sel,.menu li:hover{opacity:1;border-left-color:#ffd84a;background:linear-gradient(90deg,rgba(255,216,74,.28),rgba(255,216,74,0));padding-left:30px;color:#fff7c8}
+#omenu{width:min(640px,88vw)}#omenu li{font-size:26px}#omenu li span{display:flex;align-items:center;gap:12px;white-space:nowrap}
+.menu li span{font:700 20px "Segoe UI";font-style:normal;color:#6fe0ff}
+.menu li input{width:170px;accent-color:#ffd84a;pointer-events:auto}
+.hint{position:absolute;left:8vw;bottom:34px;font-size:14px;letter-spacing:1px;opacity:.75}
+.ver{position:absolute;right:30px;bottom:30px;font-size:13px;opacity:.6;text-align:right;line-height:1.6}
+h2.t{font:italic 900 58px "Arial Black",Impact,sans-serif;margin-bottom:22px;color:#ffe04a;filter:drop-shadow(3px 4px 0 #0b2a3c)}
+#pause,#options,#shop{background:linear-gradient(90deg,rgba(3,10,18,.93) 0%,rgba(3,10,18,.78) 50%,rgba(3,10,18,.45) 100%);backdrop-filter:blur(3px)}
+#mapscreen{position:fixed;inset:0;background:#0d2434;display:flex;align-items:center;justify-content:center}
+#bigmap{max-width:100%;max-height:100%}
+#maplegend{position:absolute;right:30px;bottom:26px;background:rgba(3,10,18,.78);padding:16px 20px;border-radius:12px;font-size:15px;line-height:1.9;border:1px solid rgba(255,255,255,.18)}
+#maplegend h3{font:italic 900 26px "Arial Black";color:#ffe04a;margin-bottom:4px}
+#maplegend i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:9px;vertical-align:-2px}
+#controls{position:absolute;right:6vw;top:50%;transform:translateY(-50%);background:rgba(3,10,18,.6);padding:20px 26px;border-radius:14px;font-size:15px;line-height:2;border:1px solid rgba(255,255,255,.15)}
+#controls kbd{background:#fff;color:#111;border-radius:4px;padding:1px 7px;font:800 12px "Segoe UI";margin-right:4px}
+#controls h3{color:#ffd84a;letter-spacing:3px;font-size:14px}
+#err{position:fixed;left:0;top:0;right:0;background:#a00;color:#fff;font:12px monospace;padding:4px;z-index:99;white-space:pre-wrap}
+#load{position:fixed;inset:0;background:#06121c;display:flex;align-items:center;justify-content:center;font:italic 900 34px "Arial Black";color:#ffe04a;z-index:50}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="dmg"></div>
+<div id="hud" class="hide">
+  <div id="prompt" class="hide"></div>
+  <div id="radio"><b id="rname">WAVE 99</b><span id="rgenre">Synthwave</span></div>
+  <div id="timer" class="hide"></div>
+  <div id="tr">
+    <div id="stars"></div>
+    <div id="money">$0</div>
+    <div id="clock">10:00</div>
+    <div id="wbox"><span id="wname">Fists</span><span id="ammo"></span></div>
+  </div>
+  <div id="cross" class="hide"></div>
+  <div id="banner"><h1 id="bh"></h1><p id="bp"></p></div>
+  <div id="sub"></div>
+  <div id="obj" class="hide"></div>
+  <div id="zone"><span id="zname"></span><small id="zsub"></small></div>
+  <div id="speed" class="hide"><span id="spd">0</span><small>MPH</small></div>
+  <div id="miniwrap"><canvas id="mini" width="232" height="164"></canvas><div class="bars"><div class="bar"><i id="hp"></i></div><div class="bar"><i id="ar"></i></div></div></div>
+</div>
+<div id="mapscreen" class="hide"><canvas id="bigmap"></canvas>
+  <div id="maplegend"><h3>PALMERA BAY</h3><div><i style="background:#fff;border-radius:2px"></i>You</div><div><i style="background:#ffd84a"></i>Job contact</div><div><i style="background:#ff5a8a"></i>Objective</div><div><i style="background:#6fe0ff"></i>Safehouse</div><div><i style="background:#ff7043"></i>Gator Guns</div><div><i style="background:#b388ff"></i>Mojo Motors (repair)</div><div><i style="background:#66e08a"></i>Hospital</div><div><i style="background:#4a8dff"></i>Police</div><div style="opacity:.7;margin-top:6px">M / Esc to close</div></div></div>
+<div id="title" class="screen hide">
+  <div class="logo"><span>PALMERA</span><span class="l2">HEAT</span><small>A PALMERA BAY CRIME STORY</small></div>
+  <ul class="menu" id="tmenu"></ul>
+  <div class="hint">↑ ↓ / mouse to choose &nbsp;·&nbsp; Enter to select</div>
+  <div class="ver">Original city, characters &amp; soundtrack<br>v1.0</div>
+</div>
+<div id="pause" class="screen hide"><h2 class="t" style="margin-bottom:6px">PAUSED</h2><div id="pstats" style="font:600 17px 'Segoe UI';letter-spacing:1px;color:#6fe0ff;margin:0 0 18px 6px"></div><ul class="menu" id="pmenu"></ul>
+  <div id="controls"><h3>CONTROLS</h3><kbd>WASD</kbd>Move / drive<br><kbd>Mouse</kbd>Look &nbsp;<kbd>Shift</kbd>Sprint &nbsp;<kbd>Space</kbd>Jump / handbrake<br><kbd>F</kbd>Enter / exit vehicle &nbsp;<kbd>E</kbd>Interact<br><kbd>LMB</kbd>Attack / shoot (also from cars) &nbsp;<kbd>RMB</kbd>Aim &nbsp;<kbd>R</kbd>Reload<br><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>Fists / pistol / rifle<br><kbd>Q</kbd>Radio station &nbsp;<kbd>H</kbd>Horn &nbsp;<kbd>C</kbd>Look behind<br><kbd>M</kbd>Map &nbsp;<kbd>Esc</kbd>Pause</div></div>
+<div id="options" class="screen hide"><h2 class="t">OPTIONS</h2><ul class="menu" id="omenu"></ul></div>
+<div id="shop" class="screen hide"><h2 class="t" id="shoptitle">GATOR GUNS</h2><ul class="menu" id="smenu"></ul></div>
+<div id="quit" class="screen hide" style="align-items:center;padding:0;background:rgba(3,10,18,.92)"><h2 class="t">See you in Palmera Bay.</h2><ul class="menu" id="qmenu" style="text-align:center"></ul></div>
+<div id="fade"></div>
+<div id="load">LOADING PALMERA BAY…</div>
+<div id="err" class="hide"></div>
+<script>
+var DBG=/autoplay|scene|debug/.test(location.search);
+window.addEventListener('error',function(e){var d=document.getElementById('err');if(DBG)d.classList.remove('hide');d.textContent+=(e.message||e)+' @'+(e.filename||'').split('/').pop()+':'+e.lineno+'\n';});
+window.addEventListener('unhandledrejection',function(e){var d=document.getElementById('err');if(DBG)d.classList.remove('hide');d.textContent+='Promise: '+(e.reason&&e.reason.stack||e.reason)+'\n';});
+</script>
+<script src="audio.js" onerror="console.warn('no audio')"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
+<script type="module" src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+Make GTA 6 in Unreal Engine 5.8. It should look and feel like a modern open-world crime game in the style of GTA 6, as close as you can possibly get it, and like a finished game, not a prototype. This is a head-to-head test against another AI that gets the exact same prompt, project and time, so try your absolute best and aim for the most impressive result you can make. Use your own original city, characters, cars, story and art: no Rockstar names, logos, maps, characters or files.
+
+The complete game:
+- Title screen with a menu: Start, Options, Quit.
+- A big sunny Florida-style coastal city: streets with lanes and intersections, traffic lights, sidewalks, palm trees, beaches and water, a downtown with tall buildings, neighborhoods, shops, a highway and a bridge. Realistic lighting, reflections and atmosphere.
+- Third-person view of my character. WASD to move, mouse to look, Shift to sprint, Space to jump.
+- Cars driving around the city with traffic AI. Press F to steal and enter any car, drive it with a chase camera and real vehicle physics, crash into things with damage, exit again.
+- Pedestrians walking the sidewalks who react and run when there is danger.
+- Weapons: punch, a pistol and a rifle with a crosshair, aiming, shooting, ammo and reloading.
+- A wanted level with stars: crimes bring police cars that chase me, more stars bring more police, and hiding long enough clears it.
+- Health and armor, death and respawn at a hospital.
+- A minimap with roads, my position and missions, and a full map screen.
+- At least three missions with markers, objectives and rewards, and money I earn and spend.
+- A day and night cycle with a sun, street lights and car headlights at night.
+- A radio in cars with a few stations of music.
+- Sounds: engines, horns, gunshots, sirens, footsteps, crashes.
+- Saving and loading progress.
+- Options: graphics quality, field of view, mouse sensitivity, volume.
+
+What you have to work with:
+- This folder is an Unreal Engine 5.8 project: the official third-person template (a mannequin character, input set up, a test level) plus a C++ module named StarterGame. It compiles as it is. The engine is at C:\Program Files\Epic Games\UE_5.8 (all engine plugins and engine content are available; enable plugins in StarterGame.uproject, for example ChaosVehicles for cars). Visual Studio 2022 is installed.
+- Three tools, run with node from this folder:
+  - `node ../unreal-tools/ue_build.js` compiles your C++ and prints errors.
+  - `node ../unreal-tools/ue_python.js <script.py>` runs an Unreal editor Python script headless (build levels, place actors, make materials and assets, set project settings, save maps). Use it to build the city.
+  - `node ../unreal-tools/ue_shot.js <out.png> [waitSec] [game args...]` runs your game offscreen at 1280x720 and saves a screenshot. Make your game support command-line options: `-AutoShot=<seconds>` (take a HighResShot after that many seconds, then quit), `-AutoPlay=1` (skip the menus and let a computer player walk, steal a car and drive through the city causing some chaos), and `-Scene=<name>` presets for the title menu, driving, a police chase, night, the map and a mission, so you can see the real game. Look at your screenshots often, check everything the way a player would see it, and fix anything that looks wrong, empty or basic.
+- You may download free CC0 or free-to-use assets that need no account and no payment (for example Poly Haven, ambientCG, Kenney). Nothing paid, no sign-ups.
+- Rules: work only inside this folder. Never open a window on the screen: no editor UI, and run the game only through ue_shot.js (the user is using this computer). Do not touch other projects or anything outside this folder.
+
+You have 2 hours. It is now {START}, so you must be finished by {END}. Check the clock as you work. Get a playable version (it compiles, the default map loads into the game) saved early, then keep improving it until the time is up. The saved project must always compile and run.
