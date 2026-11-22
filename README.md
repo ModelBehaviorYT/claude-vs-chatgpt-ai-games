@@ -60,3 +60,9 @@ during its two hours.
 - Both Unreal games include content from Epic Games' Third Person template, covered by the
   [Unreal Engine EULA](https://www.unrealengine.com/eula), not the MIT license.
 - This is a fan-made AI experiment. It isn't affiliated with Rockstar Games, and it contains no Rockstar names, maps or files.
+
+## More AI-made games
+
+- [Kart racer: Claude with 1 minute vs 10 minutes vs 1 hour](https://modelbehavioryt.github.io/claude-ai-kart-racer/)
+- [One-button rhythm game: ChatGPT vs Claude](https://modelbehavioryt.github.io/claude-vs-chatgpt-dash-game/)
+- [Block-building survival game: Claude Fable 5.2 vs Opus 5.5](https://modelbehavioryt.github.io/fable-vs-opus-block-game/)
